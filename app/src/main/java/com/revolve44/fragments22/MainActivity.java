@@ -162,17 +162,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public Float getMyData() {
+    public Float getCurrentPowerData() {
         return CurrentPower;
     }
-    public String getMyData2() {
+    public String getCityData() {
         return CITY;
     }
-    public Float getMyData3() {
+    public Float getTempData() {
         return temp;
     }
-    public Float getMyData4() { return wind; }
-    public LinkedHashSet<DataPoint> getMyData5() { return dataPoints; }
+    public Float getWindData() { return wind; }
+    public LinkedHashSet<DataPoint> getDataPointsData() { return dataPoints; }
 
     public void runforecast() {
         getCurrentData();
