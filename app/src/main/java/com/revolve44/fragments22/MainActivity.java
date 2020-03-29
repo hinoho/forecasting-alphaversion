@@ -1,26 +1,16 @@
 package com.revolve44.fragments22;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.revolve44.fragments22.R;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -59,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
     public float cloud;
     public float wind;
     public float temp;
-    public final LinkedHashSet<DataPoint> dataPoints = new LinkedHashSet<>();
+    public boolean isDataAvailable = false;
+    public final LinkedHashMap<Long, Float> dataMap = new LinkedHashMap<>();
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
@@ -90,13 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     void getCurrentData() {
-        CITY = "Moscow";
+        CITY = "Graz";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         WeatherService service = retrofit.create(WeatherService.class);
-        //Call<WeatherResponse> call = service.getCurrentWeatherData(lat, lon, metric, AppId);
         Call<WeatherResponse> call = service.getCurrentWeatherData(CITY, metric, AppId);
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -104,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     WeatherResponse weatherResponse = response.body();
                     assert weatherResponse != null;
+                    isDataAvailable = true;
                     cloud = weatherResponse.clouds.all;
                     temp = weatherResponse.main.temp;
                     wind = weatherResponse.wind.speed;
@@ -134,10 +125,9 @@ public class MainActivity extends AppCompatActivity {
                     WeatherForecastResponse weatherResponse = response.body();
                     assert weatherResponse != null;
                     ArrayList<WeatherResponse> list = weatherResponse.list;
-                    if (dataPoints.size() == 0){
+                    if (dataMap.size() == 0){
                         for(WeatherResponse wr: list){
-                            Date time = new Date((long) wr.dt * 1000);
-                            dataPoints.add(new DataPoint(time, NominalPower * wr.clouds.all / 100));
+                            dataMap.put((long)wr.dt * 1000, NominalPower * wr.clouds.all / 100);
                         }
                     }
                 }
@@ -154,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Context context = getApplicationContext();
-        CharSequence text = "Hello toast! " + cloud + " and "+temp;
+        CharSequence text = "Hello toast! " + cloud + " and "+ temp;
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
@@ -172,8 +162,9 @@ public class MainActivity extends AppCompatActivity {
         return temp;
     }
     public Float getWindData() { return wind; }
-    public LinkedHashSet<DataPoint> getDataPointsData() { return dataPoints; }
-
+    public Boolean isDataAvailable(){ return isDataAvailable; }
+    public LinkedHashMap<Long, Float> getDataPointsData() { return dataMap; }
+    public Float getNominalPower() {return NominalPower;}
     public void runforecast() {
         getCurrentData();
     }

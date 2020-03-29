@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jjoe64.graphview.series.DataPoint;
 import com.revolve44.fragments22.MainActivity;
 import com.revolve44.fragments22.R;
 
@@ -26,8 +25,7 @@ import com.revolve44.fragments22.recyclerview.recyclerviewitems.RecyclerViewItem
 import com.revolve44.fragments22.recyclerview.recyclerviewitems.RecyclerViewItemInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -47,7 +45,6 @@ public class HomeFragment extends Fragment {
         //TextViews
         final TextView realOutputTextView = root.findViewById(R.id.real_output);
         final TextView cityTextView = root.findViewById(R.id.city);
-
         final ImageView lamp = root.findViewById(R.id.lamp);
 
         ((MainActivity) Objects.requireNonNull(getActivity())).runforecast();
@@ -59,8 +56,10 @@ public class HomeFragment extends Fragment {
         realOutputTextView.setText("" + currentPower + " Watts");
         cityTextView.setText(city);
 
+        boolean isDataAvailable = activity.isDataAvailable();
+
         //recycler view
-        if(currentPower != 0) {
+        if(isDataAvailable) {
             initControls();
             recyclerView = root.findViewById(R.id.recycler_view);
             GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
@@ -103,12 +102,10 @@ public class HomeFragment extends Fragment {
             RecyclerViewItemInfo info = new RecyclerViewItemInfo(temperature, speedOfWind);
             itemList.add(info);
 
-            LinkedHashSet<DataPoint> forecastData = activity.getDataPointsData();
+            LinkedHashMap<Long, Float> forecastData = activity.getDataPointsData();
             //все данные из запроса, на всякий случай
-            DataPoint[] dataPoints = forecastData.toArray(new DataPoint[0]);
             //данные за последний день
-            DataPoint[] dataPointsPreview = Arrays.copyOfRange(dataPoints, 0, 7);
-            RecyclerViewItemGraph graph = new RecyclerViewItemGraph(dataPointsPreview);
+            RecyclerViewItemGraph graph = new RecyclerViewItemGraph(forecastData, activity.getNominalPower());
             itemList.add(graph);
         }
     }

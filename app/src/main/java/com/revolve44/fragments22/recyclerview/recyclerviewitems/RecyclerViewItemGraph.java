@@ -1,18 +1,22 @@
 package com.revolve44.fragments22.recyclerview.recyclerviewitems;
-
-import com.jjoe64.graphview.series.DataPoint;
 import com.revolve44.fragments22.recyclerview.RecyclerViewItem;
+
+import java.util.LinkedHashMap;
 
 
 public class RecyclerViewItemGraph extends RecyclerViewItem {
-    private DataPoint[] dataPoints;
+    private LinkedHashMap<Long, Float> dataMap;
+    private float nominalPower;
 
-    public RecyclerViewItemGraph(DataPoint[] dataPoint) {
+    public RecyclerViewItemGraph(LinkedHashMap<Long, Float> dataMap, float nominalPower) {
         this.type = RecyclerViewItem.TYPE_GRAPH;
-        this.dataPoints = dataPoint;
+        this.dataMap = dataMap;
+        this.nominalPower = nominalPower;
     }
 
-    public DataPoint[] getGraphData(){
-        return dataPoints;
+    public LinkedHashMap<Long, Float> getGraphData(){
+        return dataMap;
     }
+
+    public float getNominalPower() { return nominalPower;}
 }

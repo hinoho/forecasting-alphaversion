@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.revolve44.fragments22.R;
 import com.revolve44.fragments22.recyclerview.recyclerviewitems.RecyclerViewItemGraph;
 import com.revolve44.fragments22.recyclerview.recyclerviewitems.RecyclerViewItemInfo;
@@ -43,7 +42,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewHo
             holder.setTempData(((RecyclerViewItemInfo)viewItem).getTempData(), ((RecyclerViewItemInfo)viewItem).getWindData());
         }
         else if (getItemViewType(position) == RecyclerViewItem.TYPE_GRAPH){
-            holder.setGraphData(((RecyclerViewItemGraph)viewItem).getGraphData());
+            holder.setGraphData(((RecyclerViewItemGraph)viewItem).getGraphData(), ((RecyclerViewItemGraph)viewItem).getNominalPower());
         }
     }
 
